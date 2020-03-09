@@ -1,5 +1,5 @@
 import React from 'react';
-import {BrowserRouter as Router,Route,Switch} from 'react-router-dom'
+import {BrowserRouter as Router,Route,Switch,Redirect} from 'react-router-dom'
 import Home from './pages/Home'
 import CityList from './pages/CityList'
 import Maps from './pages/Map'
@@ -10,6 +10,7 @@ function App() {
     <Router>
     <div className="app">
      <Switch>
+     <Route exact path="/" render={()=><Redirect to='/home'/>} />
      <Route path="/home" component={Home}/>
      <Route path="/citylist" component={CityList}/>
      <Route path="/map" component={Maps}/>

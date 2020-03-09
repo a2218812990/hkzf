@@ -14,7 +14,7 @@ import { TabBar } from 'antd-mobile'
 import TabItems from '../../utils/tabBar'
 
  class Home extends Component {
-
+    // 数据
     state = {
         selectedTab:this.props.location.pathname,
       }
