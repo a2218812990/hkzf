@@ -3,6 +3,7 @@ import { Carousel,Flex,Grid,WingBlank,SearchBar} from 'antd-mobile';
 
 import {BASE_URL} from '../../../utils/request'
 import {getSwiper,getGridList,getNewInfo} from '../../../utils/API/home'
+import {getCityInfo} from '../../../utils/API/city'
 
 import './index.scss'
 // 栏目导航数据引入
@@ -15,12 +16,15 @@ import navs from '../../../utils/navlist'
         autoplay:false,
         groups:[],
         news:[],
-        keyword:''
+        keyword:'',
+        cityInfo:{
+          label:'--',
+          value:''
+        }
       }
   // 封装所有请求
     getAllData=async ()=>{
        let res=await Promise.all([getSwiper(),getGridList(),getNewInfo()])
-        console.log(res);
         this.setState({
           data: res[0].data,
           groups:res[1].data,
@@ -33,6 +37,7 @@ import navs from '../../../utils/navlist'
     }
     componentDidMount() {
         this.getAllData()
+        this.getCityInfo()
     }
     //   轮播图组件
     Swipers(){
@@ -129,12 +134,13 @@ import navs from '../../../utils/navlist'
       )
     }
     // 顶部导航渲染
-    topSearchBar(){
+    topSearchBar=()=>{
+     const { push } = this.props.history;
      return(
       <Flex justify="around" className="topNav">
       <div className="searchBox">
-        <div className="city">
-          北京<i className="iconfont icon-arrow" />
+        <div className="city" onClick={() => push('/cityList')}>
+          {this.state.cityInfo.label}<i className="iconfont icon-arrow" />
         </div>
         <SearchBar
           value={this.state.keyword}
@@ -143,11 +149,24 @@ import navs from '../../../utils/navlist'
         />
       </div>
       <div className="map">
-        <i key="0" className="iconfont icon-map" />
+        <i key="0" className="iconfont icon-map" onClick={() => push('/map')} />
       </div>
     </Flex>
      )
     }
+    // 获取当前城市信息
+    getCityInfo=()=>{
+           // 定位
+           let myCity = new window.BMap.LocalCity();
+           myCity.get( async (result)=>{
+               let cityName = result.name;               
+               let res =await getCityInfo(cityName)
+               this.setState({
+                   cityInfo:res.data
+               })
+           }); 
+    }
+
     render() {
         return (
         <div>
