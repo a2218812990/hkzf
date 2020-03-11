@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Carousel,Flex,Grid,WingBlank} from 'antd-mobile'; 
+import { Carousel,Flex,Grid,WingBlank,SearchBar} from 'antd-mobile'; 
 
 import {BASE_URL} from '../../../utils/request'
 import {getSwiper,getGridList,getNewInfo} from '../../../utils/API/home'
@@ -14,19 +14,26 @@ import navs from '../../../utils/navlist'
         imgHeight: 212,
         autoplay:false,
         groups:[],
-        news:[]
+        news:[],
+        keyword:''
       }
-  
-
-
-      componentDidMount() {
-        // 轮播图接口
-        this.getSwiper()
-        // 宫格接口
-        this.getGridInfo()
-        // 最新资讯接口
-        this.getNewInfo()
-      }
+  // 封装所有请求
+    getAllData=async ()=>{
+       let res=await Promise.all([getSwiper(),getGridList(),getNewInfo()])
+        console.log(res);
+        this.setState({
+          data: res[0].data,
+          groups:res[1].data,
+          news:res[2].data
+        },()=>{
+          this.setState({
+              autoplay:true
+           })
+       })
+    }
+    componentDidMount() {
+        this.getAllData()
+    }
     //   轮播图组件
     Swipers(){
         return(
@@ -50,19 +57,7 @@ import navs from '../../../utils/navlist'
               ))
         )
     }
-    //  获取轮播图
-    getSwiper=async ()=>{
-        let res= await getSwiper()
-        if(res.status===200){
-             this.setState({
-                data:res.data
-             },()=>{
-                this.setState({
-                    autoplay:true
-                 })
-             })
-        }
-    }
+  
     //  栏目导航组件
     NavList(){
         return(
@@ -76,14 +71,7 @@ import navs from '../../../utils/navlist'
             )
         )
     }
-    // 获取租房小组宫格数据
-    getGridInfo=async()=>{
-        let {data} = await getGridList()
-        this.setState({
-          groups:data
-        })
-        
-    }
+    
     // 租房小组标题宫格组件
     renderGroup(){
       return(
@@ -115,15 +103,7 @@ import navs from '../../../utils/navlist'
               </div>   
       )
     }
-    // 获取最新资讯
-    getNewInfo=async ()=>{
-        let {data}=await getNewInfo()
-        console.log(data);
-        
-        this.setState({
-          news:data
-        })
-    }
+    
     // 最新资讯组件
     renderNews(){
       return(
@@ -148,9 +128,31 @@ import navs from '../../../utils/navlist'
           )
       )
     }
+    // 顶部导航渲染
+    topSearchBar(){
+     return(
+      <Flex justify="around" className="topNav">
+      <div className="searchBox">
+        <div className="city">
+          北京<i className="iconfont icon-arrow" />
+        </div>
+        <SearchBar
+          value={this.state.keyword}
+          onChange={(v) => this.setState({ keyword: v })}
+          placeholder="请输入小区或地址"
+        />
+      </div>
+      <div className="map">
+        <i key="0" className="iconfont icon-map" />
+      </div>
+    </Flex>
+     )
+    }
     render() {
         return (
         <div>
+            {/* 顶部导航 */}
+            {this.topSearchBar()}
             {/* 轮播图 */}
              <Carousel
               autoplay={this.state.autoplay}
@@ -172,9 +174,8 @@ import navs from '../../../utils/navlist'
               <WingBlank size="md">{this.renderNews()}</WingBlank>
            </div>
        </div>
-         
 
-        )
+        )  
     }
 }
 export default Default
