@@ -4,6 +4,7 @@ import {NavBar,Icon} from 'antd-mobile'
 import './index.css'
 
 
+
 export default class index extends Component {
 
 
@@ -18,7 +19,7 @@ export default class index extends Component {
         let point = new window.BMap.Point(116.331398,39.897445); 
         map.centerAndZoom(point, 15);  
     }
-
+    
     render() {
         return (
         <div className='mapBox'>
