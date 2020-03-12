@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 
 import {getCityList,getHotCity} from '../../utils/API/city'
+import {getCityPlace} from '../../utils/index'
 
 export default class index extends Component {
     state={
@@ -21,7 +22,10 @@ componentDidMount(){
      let re=await getHotCity()  
      cityIndex.unshift('hot')
      cityList['hot']=re.data
-
+    //  当前定位城市
+     let city=await getCityPlace()
+     cityIndex.unshift('#')
+     cityList['#']=[city]
  }
 // 处理后台返回的城市列表数据 
  workInData=(data)=>{

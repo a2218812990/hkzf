@@ -3,7 +3,10 @@ import { Carousel,Flex,Grid,WingBlank,SearchBar} from 'antd-mobile';
 
 import {BASE_URL} from '../../../utils/request'
 import {getSwiper,getGridList,getNewInfo} from '../../../utils/API/home'
-import {getCityInfo} from '../../../utils/API/city'
+
+
+// 公共定位城市方法引入
+import {getCityPlace} from '../../../utils/index'
 
 import './index.scss'
 // 栏目导航数据引入
@@ -155,16 +158,12 @@ import navs from '../../../utils/navlist'
      )
     }
     // 获取当前城市信息
-    getCityInfo=()=>{
+    getCityInfo=async ()=>{
            // 定位
-           let myCity = new window.BMap.LocalCity();
-           myCity.get( async (result)=>{
-               let cityName = result.name;               
-               let res =await getCityInfo(cityName)
-               this.setState({
-                   cityInfo:res.data
-               })
-           }); 
+         let res= await getCityPlace()
+         this.setState({
+          cityInfo:res
+         })
     }
 
     render() {
