@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import {getCityList} from '../../utils/API/city'
+import {getCityList,getHotCity} from '../../utils/API/city'
 
 export default class index extends Component {
     state={
@@ -16,8 +16,12 @@ componentDidMount(){
  
  GetCityList=async ()=>{
      let res=await getCityList()
-     console.log(res);
-     this.workInData(res.data)
+     let { cityList , cityIndex }=this.workInData(res.data)
+    //  热门城市
+     let re=await getHotCity()  
+     cityIndex.unshift('hot')
+     cityList['hot']=re.data
+
  }
 // 处理后台返回的城市列表数据 
  workInData=(data)=>{

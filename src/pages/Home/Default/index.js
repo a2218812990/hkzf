@@ -176,8 +176,8 @@ import navs from '../../../utils/navlist'
              <Carousel
               autoplay={this.state.autoplay}
               infinite
-              beforeChange={(from, to) => console.log(`slide from ${from} to ${to}`)}
-              afterChange={index => console.log('slide to', index)}
+              // beforeChange={(from, to) => console.log(null)}
+              // afterChange={index =>console.log(null)}
             >
               {this.Swipers()}
          </Carousel>
