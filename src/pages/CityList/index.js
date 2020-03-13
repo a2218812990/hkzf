@@ -2,10 +2,10 @@ import React, { Component } from 'react'
 
 import {getCityList,getHotCity} from '../../utils/API/city'
 import {getCityPlace} from '../../utils/index'
-
+import {setItem} from '../../utils/index'
 // 引入list列表
 import {List,AutoSizer} from 'react-virtualized'
-import {NavBar,Icon} from 'antd-mobile'
+import {NavBar,Icon, Toast} from 'antd-mobile'
 
 import './index.scss'
 
@@ -76,7 +76,16 @@ componentDidMount(){
         return letter.toUpperCase();
     }
   }
-
+// 切换城市
+changeCity=(city)=>{
+  const hasData = ['北京', '上海', '广州', '深圳'];
+  if(hasData.includes(city.label)){
+     setItem('city',JSON.stringify(city))
+     this.props.history.goBack()
+  }else{
+      Toast.info('该城市暂无房源数据！')
+  }
+}
   // 列表组件
 rowRenderer=({
     key, // Unique key within array of rows
@@ -91,7 +100,7 @@ rowRenderer=({
       <div key={key} style={style} className="city">
         <div className="title">{this.formatLetter(letter)}</div>
         {
-          cityList[letter].map((item) => <div key={item.value} className="name">{item.label}</div>)
+          cityList[letter].map((item) => <div onClick={()=>{this.changeCity(item)}} key={item.value} className="name">{item.label}</div>)
         }
       </div>
     )  
