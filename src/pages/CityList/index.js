@@ -66,16 +66,34 @@ componentDidMount(){
     return  36 + 50 * cityList[key].length;
   }
   // 格式化字母
-  formatLetter(letter) {
+  formatLetter(letter,first) {
     switch (letter) {
       case 'hot':
-        return '热门城市';
+        return first ? '热':'热门城市';
       case '#':
-        return '当前城市';
+        return first ? '当': '当前城市';
       default:
         return letter.toUpperCase();
     }
   }
+  // 右边字母导航的渲染
+ renderIndex=()=>{
+   const {cityIndex} =this.state
+   return(
+    cityIndex.map((item,index)=>{
+      return (
+        <li
+          key={item}
+          className="city-index-item"
+        >
+          <span className={0 === index ? 'index-active' : ''}>
+            {this.formatLetter(item, true)}
+          </span>
+        </li>
+      )
+    })
+   )
+ }
 // 切换城市
 changeCity=(city)=>{
   const hasData = ['北京', '上海', '广州', '深圳'];
@@ -128,6 +146,10 @@ rowRenderer=({
                     />
                     )}
                 </AutoSizer>
+                {/* 右边字母渲染 */}
+                <ul className="city-index">
+                  {this.renderIndex()}
+                  </ul>  
             </div>
         )
     }
