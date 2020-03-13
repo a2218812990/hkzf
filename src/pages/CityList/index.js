@@ -13,11 +13,14 @@ export default class CityList extends Component {
    
     state= {
         cityIndex:[],
-        cityList:{}
+        cityList:{},
+        activeIndex: 0
     }
 
 componentDidMount(){
     this.GetCityList()
+    // 获取索引列表实例
+    this.listRef = React.createRef()
 }
 
 //  获取城市列表信息 
@@ -77,23 +80,25 @@ componentDidMount(){
     }
   }
   // 右边字母导航的渲染
- renderIndex=()=>{
-   const {cityIndex} =this.state
-   return(
-    cityIndex.map((item,index)=>{
+  renderCityIndex = () => {
+    const { cityIndex, activeIndex } = this.state;
+    return cityIndex.map((item, index) => {
       return (
         <li
           key={item}
           className="city-index-item"
         >
-          <span className={0 === index ? 'index-active' : ''}>
+          <span 
+          onClick={() => {
+            this.listRef.current.scrollToRow(index)
+          }}   
+          className={activeIndex === index ? 'index-active' : ''}>
             {this.formatLetter(item, true)}
           </span>
         </li>
       )
     })
-   )
- }
+  }
 // 切换城市
 changeCity=(city)=>{
   const hasData = ['北京', '上海', '广州', '深圳'];
@@ -123,6 +128,15 @@ rowRenderer=({
       </div>
     )  
   }
+  // 滚动渲染右边列表事件
+  onRowsRendered=({startIndex })=>{
+    if( this.state.activeIndex!==startIndex ){
+      this.setState({
+        activeIndex: startIndex 
+      })
+    }
+        
+  }
     render() {
         return (
             <div className='citylist'>
@@ -138,6 +152,9 @@ rowRenderer=({
                 <AutoSizer>
                 {({ height, width }) => (
                     <List
+                    scrollToAlignment="start"
+                    onRowsRendered={this.onRowsRendered}
+                    ref={this.listRef} 
                     height={height}
                     rowCount={this.state.cityIndex.length}
                     rowHeight={this.getRowHeight}
@@ -148,7 +165,7 @@ rowRenderer=({
                 </AutoSizer>
                 {/* 右边字母渲染 */}
                 <ul className="city-index">
-                  {this.renderIndex()}
+                  {this.renderCityIndex()}
                   </ul>  
             </div>
         )
